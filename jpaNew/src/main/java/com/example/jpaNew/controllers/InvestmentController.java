@@ -50,12 +50,25 @@ public class InvestmentController {
         return new ResponseEntity<>(byId, HttpStatus.CREATED);
     }
 
+    @RequestMapping(method = RequestMethod.POST,value = "/investment",produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<?> processInvestment(@RequestBody Investment investment){
+
+        final String methodName = "processInvestment() : ";
+        System.out.println(methodName + "called");
+        Investment processInvestment= investmentService.processInvestment(investment);
+        return new ResponseEntity<>(processInvestment,HttpStatus.CREATED);
+
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable ("id") Long id)
     {
         investmentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+
 
     @RequestMapping(method = RequestMethod.PUT, value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateById(@RequestBody Investment investment, @PathVariable ("id") Long id)
