@@ -49,11 +49,6 @@ public class InvestmentService {
         return byId;
     }
 
-    public Investment save(Investment investment) {
-
-        Investment byId= investmentRepository.save(investment);
-        return byId;
-    }
 
     public void deleteById(Long id) {
 
@@ -71,6 +66,7 @@ public class InvestmentService {
     public Investment processInvestment(Investment investment){
         final String methodName = "processInvestment() : ";
         log.info(methodName + "called " + investment);
+        Investment insertedInvestment= null;
 
         if(investment != null )
         {
@@ -95,14 +91,14 @@ public class InvestmentService {
 
                             if(balance> fdAmount)
                             {
-                                double newBalance= balance-fdAmount;
+                                double newBalance= checkBalance(balance,fdAmount);
                                 accounts.setBalance(newBalance);
                             }
 
                             Accounts accountUpdate= accountsService.save(accounts);
                             double rateFD = investment.getRate();
                             Long durationFD= investment.getDuration();
-                            double interestFD= (fdAmount*rateFD*durationFD)/100;
+                            double interestFD= calculateSimpleInterest(fdAmount,rateFD,durationFD);
                             investment.setInterestAmount(interestFD);
                             double maturityFd= fdAmount+interestFD;
                             investment.setMaturityAmount(maturityFd);
@@ -115,14 +111,14 @@ public class InvestmentService {
 
                             if (balance>taxSavingPpf)
                             {
-                                double newBalance= balance- taxSavingPpf;
+                                double newBalance= checkBalance(balance,taxSavingPpf);
                                 accounts.setBalance(newBalance);
 
                             }
                             Accounts accountUpdate= accountsService.save(accounts);
                             double taxSavingRate= investment.getRate();
                             Long taxSavingDuration= investment.getDuration();
-                            double taxSavingInterest= (taxSavingPpf*taxSavingRate*taxSavingDuration)/100;
+                            double taxSavingInterest= calculateSimpleInterest(taxSavingPpf,taxSavingRate,taxSavingDuration);
                             investment.setInterestAmount(taxSavingInterest);
                             double maturityTaxSaving= taxSavingPpf+taxSavingInterest;
                             investment.setMaturityAmount(maturityTaxSaving);
@@ -133,7 +129,7 @@ public class InvestmentService {
                             double ppf= investment.getAmount();
                             if(balance>ppf)
                             {
-                                double newBalance= balance-ppf;
+                                double newBalance= checkBalance(balance,ppf);
                                 accounts.setBalance(newBalance);
                             }
                             Accounts accountUpdate= accountsService.save(accounts);
@@ -149,12 +145,25 @@ public class InvestmentService {
                         }
                         //update account
                         //insert investment
+                        Accounts accountUpdate= accountsService.save(accounts);
+                        if(accountUpdate!= null){
+                            insertedInvestment = save(investment);
+                        }
                     }
                 }
+            } else {
+                System.out.println(accountNo);
             }
 
         }
-        return investment;
+        return insertedInvestment;
+    }
+
+    public Investment save(Investment investment){
+        final String methodName= " save() : ";
+        System.out.println(methodName + "called ");
+        Investment investment1 = investmentRepository.save(investment);
+        return investment1;
     }
 
     private double calculateSimpleInterest(double principal,double rate, double duration){
@@ -164,6 +173,14 @@ public class InvestmentService {
         double simpleInterest = (principal * rate * duration)/100;
         log.info(methodName + "calculated simple interest is " + simpleInterest);
         return simpleInterest;
+    }
+
+    private double checkBalance(double balance, double principal){
+
+        final String methodName= "checkBalance() :";
+        double updatedBalance= balance-principal;
+        log.info(methodName + "updated balance is " + updatedBalance);
+        return  updatedBalance;
     }
 
 

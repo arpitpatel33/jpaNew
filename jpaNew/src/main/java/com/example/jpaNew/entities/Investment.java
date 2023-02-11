@@ -25,13 +25,13 @@ public class Investment {
     @Column(name = "duration")
     private Long duration;
 
-    @Column(name = "accountNo")
+    @Column(name = "account_no")
     private String accountNo;
 
-    @Column(name = "maturityAmount")
+    @Column(name = "maturity_amount")
     private Double maturityAmount;
 
-    @Column(name = "interestAmount")
+    @Column(name = "interest_amount")
     private Double interestAmount;
 
     public Investment() {
