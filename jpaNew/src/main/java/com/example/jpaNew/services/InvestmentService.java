@@ -45,6 +45,9 @@ public class InvestmentService {
 
     public List<Investment> getByIdGreaterThanEqualAndIdLessThanEqual(Long startId, Long endId) {
 
+        final String methodName= "getByIdGreaterThanEqualAndIdLessThanEqual() : ";
+        log.info(methodName + "called");
+
         List<Investment> byId= investmentRepository.findByIdGreaterThanEqualAndIdLessThanEqual(startId,endId);
         return byId;
     }
@@ -52,11 +55,17 @@ public class InvestmentService {
 
     public void deleteById(Long id) {
 
+        final String methodName= "deleteById() : ";
+        log.info(methodName + "called");
+
         investmentRepository.deleteById(id);
 
     }
 
     public Investment getById(Long id) {
+
+        final String methodName= "getById() : ";
+        log.info(methodName + "called");
 
         Investment byId= investmentRepository.findById(id).get();
         return byId;
@@ -87,11 +96,13 @@ public class InvestmentService {
                         if(investmentType.equals("FD"))
                         {
                             double balance= accounts.getBalance();
+                            log.info(methodName + "Balance is : " + balance);
                             double fdAmount= investment.getAmount();
+                            log.info(methodName + "FDAmount is : " + fdAmount);
 
                             if(balance> fdAmount)
                             {
-                                double newBalance= checkBalance(balance,fdAmount);
+                                double newBalance= calculateBalance(balance,fdAmount);
                                 accounts.setBalance(newBalance);
                             }
 
@@ -111,7 +122,7 @@ public class InvestmentService {
 
                             if (balance>taxSavingPpf)
                             {
-                                double newBalance= checkBalance(balance,taxSavingPpf);
+                                double newBalance= calculateBalance(balance,taxSavingPpf);
                                 accounts.setBalance(newBalance);
 
                             }
@@ -129,7 +140,7 @@ public class InvestmentService {
                             double ppf= investment.getAmount();
                             if(balance>ppf)
                             {
-                                double newBalance= checkBalance(balance,ppf);
+                                double newBalance= calculateBalance(balance,ppf);
                                 accounts.setBalance(newBalance);
                             }
                             Accounts accountUpdate= accountsService.save(accounts);
@@ -175,11 +186,11 @@ public class InvestmentService {
         return simpleInterest;
     }
 
-    private double checkBalance(double balance, double principal){
+    private double calculateBalance(double balance, double principal){
 
-        final String methodName= "checkBalance() :";
+        final String methodName= "calculateBalance() :";
         double updatedBalance= balance-principal;
-        log.info(methodName + "updated balance is " + updatedBalance);
+        log.info(methodName + "calculated balance is " + updatedBalance);
         return  updatedBalance;
     }
 
