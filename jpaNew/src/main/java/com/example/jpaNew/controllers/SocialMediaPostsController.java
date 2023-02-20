@@ -1,5 +1,6 @@
 package com.example.jpaNew.controllers;
 
+import com.example.jpaNew.dto.PostDTO;
 import com.example.jpaNew.entities.SocialMediaPosts;
 import com.example.jpaNew.services.SocialMediaPostsService;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/SocialMediaPosts")
+@RequestMapping(value = "/social-media-posts")
 public class SocialMediaPostsController {
 
     @Autowired
@@ -86,6 +87,15 @@ public class SocialMediaPostsController {
        return new ResponseEntity<>(updated,HttpStatus.OK);
 
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "comment/post/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getByPostIdWithComment(@PathVariable ("postId") Long postId){
+        final String methodName= "getByPostIdWithComment() : ";
+        log.info(methodName + "called : ");
+
+        PostDTO postDTO = socialMediaPostsService.getByIdWithComment(postId);
+        return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
 

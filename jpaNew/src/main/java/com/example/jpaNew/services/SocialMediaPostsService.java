@@ -1,5 +1,6 @@
 package com.example.jpaNew.services;
 
+import com.example.jpaNew.dto.PostDTO;
 import com.example.jpaNew.entities.Comments;
 import com.example.jpaNew.entities.SocialMediaPosts;
 import com.example.jpaNew.repositories.SocialMediaPostsRepository;
@@ -78,19 +79,42 @@ public class SocialMediaPostsService {
     }
 
 
-    public SocialMediaPosts processPosts(SocialMediaPosts socialMediaPosts){
-
+    public List<Comments> processPosts(SocialMediaPosts socialMediaPosts){
         final String methodName= "processPosts() : ";
         log.info(methodName + "called");
 
-        if(socialMediaPosts!= null){
-
-           String message = socialMediaPostsRepository.getMessage();
-
-            if(message!=null){
-
-                String comment= commentsService.;
-            }
+        if(socialMediaPosts == null){
+            log.error(methodName + "Social media posts is null");
+            return null;
         }
+        long postsId = socialMediaPosts.getId();
+
+        List<Comments> comments= commentsService.getByPostsId(socialMediaPosts.getId());
+
+        return comments;
+    }
+
+    public PostDTO getByIdWithComment(Long postId){
+        final String methodName = "getByIdWithComments() : ";
+        log.info(methodName + "called  with " + postId);
+
+        if(postId == null){
+            log.error(methodName + "Post id is null");
+            return null;
+        }
+
+        Optional<SocialMediaPosts> socialMediaPosts = getById(postId);
+        if(socialMediaPosts.isEmpty()){
+            log.error(methodName + "social media Posts id is null");
+            return null;
+        }
+
+        List<Comments> comments = commentsService.getByPostsId(postId);
+
+        PostDTO postDTO = new PostDTO();
+        postDTO.setSocialMediaPosts(socialMediaPosts.get());
+        postDTO.setComments(comments);
+
+        return postDTO;
     }
 }

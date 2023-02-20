@@ -45,6 +45,13 @@ public class CommentsService {
         commentsRepository.deleteById(id);
     }
 
+    public List<Comments> getByPostsId(Long postsId){
+        final String methodName = "getByPostsId() : ";
+
+        List<Comments> comments = commentsRepository.findByPostsId(postsId);
+        return comments;
+    }
+
 
 
 
