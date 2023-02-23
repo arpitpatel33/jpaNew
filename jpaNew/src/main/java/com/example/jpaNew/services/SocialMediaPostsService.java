@@ -21,6 +21,9 @@ public class SocialMediaPostsService {
     @Autowired
     private CommentsService commentsService;
 
+    @Autowired
+    private LikeService likeService;
+
     private static final Logger log= LoggerFactory.getLogger(SocialMediaPostsService.class);
 
     public List<SocialMediaPosts> getAll() {
@@ -114,6 +117,7 @@ public class SocialMediaPostsService {
         PostDTO postDTO = new PostDTO();
         postDTO.setSocialMediaPosts(socialMediaPosts.get());
         postDTO.setComments(comments);
+
 
         return postDTO;
     }
